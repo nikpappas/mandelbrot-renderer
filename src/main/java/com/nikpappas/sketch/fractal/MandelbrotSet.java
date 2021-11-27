@@ -12,7 +12,7 @@ interface MandelbrotFunction extends BiFunction<ComplexAny, ComplexAny, ComplexA
 }
 
 public class MandelbrotSet {
-    private final int maxIterations;
+    public final int maxIterations;
 
     private static final int DEFAULT_ITERATIONS = 10000;
     private static final MandelbrotFunction SQUARE = (cur, c) -> (cur.square()).add(c);
@@ -39,18 +39,20 @@ public class MandelbrotSet {
         return isMandelbrot(c);
     }
 
-    private boolean isMandelbrot(ComplexAny c) {
+
+    public int iterationsToConverge(ComplexAny c){
         double limit = 2;
         ComplexAny cur = c;
         for (int i = 0; i < maxIterations; i++) {
-//            System.out.println(i);
             cur = function.apply(cur, c);
-//            System.out.println(cur);
             if (cur.abs() > (limit)) {
-                return false;
+                return i;
             }
         }
-        return true;
+        return -1;
+    }
+    private boolean isMandelbrot(ComplexAny c) {
+        return iterationsToConverge(c)<0;
     }
 
     public static MandelbrotSet ofSquare() {
