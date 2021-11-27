@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.nikpappas'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation(
+            // as compile from https://github.com/processing/processing4
+            files('./libs/org/processing/processing4/core.jar'),
+            'com.nikpappas.utils:utils:1.0.0',
+    )
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+run {
+    mainClassName = 'com.nikpappas.sketch.fractal.Mandelbrot'
+}
+wrapper {
+    gradleVersion = "6.7"
+}
