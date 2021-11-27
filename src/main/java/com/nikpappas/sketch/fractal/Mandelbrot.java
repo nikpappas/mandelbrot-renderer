@@ -25,6 +25,7 @@ public class Mandelbrot extends PApplet {
     private boolean nearMouse = true;
     private float offsetX = 0;
     private float offsetY = 0;
+    private float rangeLimit = 2;
     private float mouseRange = 0.15f;
     public static float INIT_SCALE;
     float scale;
@@ -60,8 +61,8 @@ public class Mandelbrot extends PApplet {
                     c = Complex.of(mouseCoords._1 + INIT_SCALE * random(-mouseRange, mouseRange) / scale,
                             mouseCoords._2 + INIT_SCALE * random(-mouseRange, mouseRange) / scale);
                 } else {
-                    c = Complex.of(INIT_SCALE * (random(-2, 2)) / scale - offsetX,
-                            INIT_SCALE * (random(-2, 2)) / scale + offsetY);
+                    c = Complex.of(INIT_SCALE * (random(-rangeLimit, rangeLimit)) / scale - offsetX,
+                            INIT_SCALE * (random(-rangeLimit, rangeLimit)) / scale + offsetY);
                 }
                 if (mandelbrots.get(mandelIndex).contains(c)) {
                     toDraw.addLast(c);
@@ -162,9 +163,11 @@ public class Mandelbrot extends PApplet {
         }
         if ('.' == ke.getKey()) {
             mouseRange *= 2f;
+            rangeLimit *=1.2;
         }
         if (',' == ke.getKey()) {
             mouseRange /= 2f;
+            rangeLimit *=0.8;
         }
         if ('a' == ke.getKey()) {
             toDrawLimit *= 0.9;

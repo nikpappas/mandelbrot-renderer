@@ -2,8 +2,8 @@
 
 A window to the depths of Mandelbrot sets
 
-
 ![Screenshot of a poly Mandelbrot](https://raw.githubusercontent.com/nikpappas/mandelbrot-renderer/main/snaps/sample.jpg)
+
 ## Build
 
 ### Prerequisites
@@ -33,16 +33,19 @@ You navigate through the complex space using the arrow keys.
 
 You zoom in/out using `=`,`-` keys
 
-#### Mouse Scale
+#### Rendering window
 
-You expand and retract the mouse range that is rendered by pressing `,`,`.`
+* MOUSE MODE You expand and retract the mouse range that is rendered by pressing `,`,`.`
+* NORMAL MODE You expand and retract the rectangle rendering window by pressing `,`,`.`
 
 #### Threads
+
 The app by default runs as many threads as many cores your system has minus one (to accomodate the actual rendering
 window)
 But you can decrease, increase the number of threads at will by using the `w`/`s` keys.
 
 #### Modes
-* Different equasions can be used for Mandelplotting and you can swap between those with the `0`  key.
-Notice that the equasion used is render at the top of the window.
+
+* Different equasions can be used for Mandelplotting and you can swap between those with the `0`  key. Notice that the
+  equasion used is render at the top of the window.
 * Mouse mode on/off is with the `m` key.
