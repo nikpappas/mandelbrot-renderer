@@ -2,6 +2,8 @@
 
 A window to the depths of Mandelbrot sets
 
+
+![Screenshot of a poly Mandelbrot](https://raw.githubusercontent.com/nikpappas/mandelbrot-renderer/main/snaps/sample.jpg)
 ## Build
 
 ### Prerequisites
