@@ -42,10 +42,10 @@ public class MandelbrotCli {
     private void run() throws IOException {
         Couple<Integer> size = Couple.of(1000, 1000);
         BufferedImage img = new BufferedImage(size._1, size._2, TYPE_INT_RGB);
-        double scale = 2 * .00000000000005;
+        double scale = 2 * .00000000000001;
         Couple<Double> limitsX = Couple.of(-scale, scale);
         Couple<Double> limitsY = Couple.of(-limitsX._1 * size._1 / size._2, limitsX._1 * size._1 / size._2);
-        Couple<Double> offsets = Couple.of(-0.0100012500 - .0000000000001, -0.800000001 + .0000000000002);
+        Couple<Double> offsets = Couple.of(-0.0100012500 - .0000000000001 -.00000000000005, -0.800000001 + .0000000000002);
         range(0, size._1).parallel().forEach(i -> {
             double x = mapPixelToCoord(limitsX, size._1, i) + offsets._1;
             range(0, size._2).parallel().forEach(j -> {
