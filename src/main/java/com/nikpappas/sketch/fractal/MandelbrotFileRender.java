@@ -1,6 +1,6 @@
 package com.nikpappas.sketch.fractal;
 
-import com.nikpappas.number.Complex;
+import com.nikpappas.number.ComplexBD;
 import com.nikpappas.utils.collection.Couple;
 import com.nikpappas.utils.collection.Trio;
 import processing.core.PApplet;
@@ -22,16 +22,20 @@ public class MandelbrotFileRender extends PApplet {
     private Set<Trio<Integer>> current;
     static MandelbrotSet mandelbrotSet;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+//    private ExecutorService executor = Executors.newScheduledThreadPool(NUM_OF_THREADS);
+
     float scale = INIT_SCALE;
     float offsetX = 0;
     float offsetY = 0;
     private float limitY;
     private float limitX;
+    boolean logScale = false;
+
 
     public static void main(String[] args) {
-        size = Couple.of(900, 600);
+        size = Couple.of(300, 200);
         fileName = "snaps/firstrener.png";
-        mandelbrotSet = MandelbrotSet.ofSquare(255);
+        mandelbrotSet = MandelbrotSet.ofSquare(1000);
         System.out.printf("Running with %d threads. (+1 main) %n", NUM_OF_THREADS);
         System.out.printf("Rendering a %dx%s sized image -> %s%n", size._1, size._2, fileName);
         PApplet.main(Thread.currentThread().getStackTrace()[1].getClassName());
@@ -49,12 +53,6 @@ public class MandelbrotFileRender extends PApplet {
 
     @Override
     public void draw() {
-        background(44);
-        noStroke();
-        limitX = 2 / scale;
-        limitY = (size._2 / (float) size._1) * limitX;
-
-
         if (next.isDone() && !next.isCancelled()) {
             try {
                 current = next.get();
@@ -64,20 +62,9 @@ public class MandelbrotFileRender extends PApplet {
                 e.printStackTrace();
             }
             next.cancel(true);
+            myRedraw();
         }
 
-        if (current == null) {
-            return;
-        }
-        current.forEach(x -> {
-            if (x._3 < 0) {
-                fill(255, 255, 255);
-            } else {
-                fill(40, 255 * (x._3 + 1) / ((float) mandelbrotSet.maxIterations), 40);
-            }
-            circle(x._1, x._2, 1);
-        });
-        save(fileName);
     }
 
     @Override
@@ -101,17 +88,43 @@ public class MandelbrotFileRender extends PApplet {
         if (RIGHT == ke.getKeyCode()) {
             offsetX += INIT_SCALE * 0.1 / scale;
         }
+        if (!next.isDone()) {
+            next.cancel(true);
+        }
         next = executor.submit(calculate());
     }
 
     Callable<Set<Trio<Integer>>> calculate() {
-        return () -> range(0, size._1).boxed().flatMap(i -> {
+        return () -> range(0, size._1).boxed().parallel().flatMap(i -> {
             float x = (-limitX + 2 * limitX * i / (float) size._1) + offsetX;
-            return range(0, size._2).parallel().mapToObj(j -> {
+            return range(0, size._2).mapToObj(j -> {
                 float y = (-limitY + 2 * limitY * j / (float) size._2) + offsetY;
-                return Trio.of(i, j, mandelbrotSet.iterationsToConverge(Complex.of(x, y)));
+                return Trio.of(i, j, mandelbrotSet.iterationsToConverge(ComplexBD.of(x, y)));
             });
         }).collect(Collectors.toSet());
     }
 
+    void myRedraw() {
+        background(44);
+        noStroke();
+        limitX = 2 / scale;
+        limitY = (size._2 / (float) size._1) * limitX;
+
+
+
+        if (current == null) {
+            return;
+        }
+        current.forEach(x -> {
+            if (x._3 < 0) {
+                fill(255, 255, 255);
+            } else {
+                float green = 255 * (logScale ?
+                        1 - log((2.7f * mandelbrotSet.maxIterations / (x._3 + 1)) / mandelbrotSet.maxIterations) :
+                        (x._3 + 1) / ((float) mandelbrotSet.maxIterations));
+                fill(40, green, 40);
+            }
+            circle(x._1, x._2, 1);
+        });
+    }
 }

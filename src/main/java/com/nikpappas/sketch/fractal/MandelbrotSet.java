@@ -2,6 +2,8 @@ package com.nikpappas.sketch.fractal;
 
 import com.nikpappas.number.ComplexAny;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import static java.lang.Math.abs;
@@ -40,7 +42,8 @@ public class MandelbrotSet {
     }
 
 
-    public int iterationsToConverge(ComplexAny c){
+    public int iterationsToConverge(ComplexAny c) {
+        Set<ComplexAny> prevResuls = new HashSet<>();
         double limit = 2;
         ComplexAny cur = c;
         for (int i = 0; i < maxIterations; i++) {
@@ -48,11 +51,16 @@ public class MandelbrotSet {
             if (cur.abs() > (limit)) {
                 return i;
             }
+            if (prevResuls.contains(cur)) {
+                return -1;
+            }
+            prevResuls.add(cur);
         }
         return -1;
     }
+
     private boolean isMandelbrot(ComplexAny c) {
-        return iterationsToConverge(c)<0;
+        return iterationsToConverge(c) < 0;
     }
 
     public static MandelbrotSet ofSquare() {
